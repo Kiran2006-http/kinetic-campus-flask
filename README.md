@@ -1,129 +1,80 @@
-# 🚀 Kinetic Campus — Python Flask Application
+# 🚀 Kinetic Campus — AI-Powered Python Flask Web Application
 
-> **College submission version** — A complete conversion of the original Java Servlet + JSP project to Python Flask, keeping identical functionality, routes, database schema, and UI.
+> **100% Python Flask Implementation** — An intelligent campus event management, interactive archive, and GPU AI platform built for Presidency University, Bengaluru.
 
 ---
 
 ## 📁 Project Structure
 
 ```
-FLASK APP/
-├── app.py                  ← Main Flask application (all routes)
-├── requirements.txt        ← Python dependencies
-├── setup.sql               ← MySQL database schema
+kinetic-campus-flask/
+├── app.py                  ← Main Python Flask server (REST API & routes)
+├── ai_engine.py            ← PyTorch GPU/CPU AI Engine (NVIDIA RTX CUDA)
+├── seed_events.py          ← Database sample events seeder
+├── requirements.txt        ← Python dependencies (Flask, PyTorch, Transformers, MySQL)
+├── setup.sql               ← MySQL database schema script
 ├── static/
-│   └── uploads/            ← Uploaded event banner images (auto-created)
-└── templates/
-    ├── index.html          ← Home page  (was Index.jsp)
-    ├── register.html       ← Login/Register page  (was Register.jsp)
-    ├── dashboard.html      ← Post-registration success  (was Dashboard.jsp)
-    ├── explore.html        ← Browse events + calendar  (was explore.jsp)
-    ├── create_event.html   ← Create new event form  (was CreateEvent.jsp)
-    ├── event_details.html  ← Event RSVP page  (was EventDetails.jsp)
-    ├── my_events.html      ← Student's registered events  (was MyEvents.jsp)
-    ├── admin_dashboard.html← Admin analytics panel  (was AdminDashboard.jsp)
-    └── success.html        ← Event creation success  (was Success.jsp)
+│   ├── ai_features.js      ← AI Chatbot & frontend AI engine
+│   └── uploads/            ← Uploaded event banner images
+└── templates/              ← HTML5 & Jinja2 Templates
+    ├── index.html          ← Home page
+    ├── register.html       ← Login & Register page
+    ├── dashboard.html      ← Student Dashboard page
+    ├── explore.html        ← Browse Events, Voice Search & AI Recommendations
+    ├── create_event.html   ← Create Event Form & AI Writer
+    ├── event_details.html  ← RSVP Form & Leaflet Campus Map
+    ├── my_events.html      ← Student Registered Events
+    ├── admin_dashboard.html← Live Admin Analytics & GPU Telemetry Dashboard
+    └── success.html        ← Registration Success page
 ```
 
 ---
 
-## 🔗 Route Mapping (Java → Flask)
+## 🛠️ Technology Stack (100% Python)
 
-| Original Java Servlet / JSP | Flask Route | Method |
-|---|---|---|
-| `Index.jsp` | `/` | GET |
-| `Register.jsp` | `/register` | GET |
-| `RegisterServlet` | `/register` | POST |
-| `LoginServlet` | `/login` | POST |
-| `LogoutServlet` | `/logout` | GET/POST |
-| `Dashboard.jsp` | `/dashboard` | GET |
-| `CreateEvent.jsp` | `/create-event` | GET |
-| `CreateEventServlet` | `/create-event` | POST |
-| `Success.jsp` | `/success` | GET |
-| `explore.jsp` | `/explore` | GET |
-| `EventDetails.jsp` | `/event-details?id=X` | GET |
-| `RegisterEventServlet` | `/register-event` | POST |
-| `MyEvents.jsp` | `/my-events` | GET |
-| `DeregisterServlet` | `/deregister` | POST |
-| `AdminDashboard.jsp` | `/admin` | GET |
-| `CheckNotificationServlet` | `/check-notifications` | GET |
-| `GetPreviousEventsServlet` | `/get-previous-events` | GET |
+| Layer | Technology |
+|---|---|
+| **Backend Framework** | Python 3.12 + Flask 3.0 |
+| **Artificial Intelligence** | PyTorch (CUDA 12.1) + Sentence-Transformers (`all-MiniLM-L6-v2`) |
+| **Data Analytics** | NumPy + Chart.js |
+| **Database** | MySQL Server via `mysql-connector-python` |
+| **Frontend** | HTML5, Tailwind CSS, JavaScript (ES6+), Leaflet.js Maps |
+| **Audio Processing** | Web Speech API (AI Voice Search) |
 
 ---
 
-## ⚙️ Setup & Run
+## ⚙️ Setup & Run Instructions
 
-### 1. Install Python dependencies
+### 1. Install Dependencies
 ```bash
-pip install -r requirements.txt
+py -3.12 -m pip install -r requirements.txt
 ```
 
-### 2. Set up the MySQL database
-Open MySQL and run:
+### 2. Set up MySQL Database
+Import `setup.sql` into MySQL Workbench or run:
 ```bash
 mysql -u root -p < setup.sql
 ```
-Or paste the contents of `setup.sql` into MySQL Workbench / phpMyAdmin.
 
-### 3. Configure DB credentials
-In `app.py`, update the `DB_CONFIG` dictionary if your credentials differ:
-```python
-DB_CONFIG = {
-    "host":     "localhost",
-    "user":     "root",
-    "password": "gaurav@03",   # ← change this if needed
-    "database": "kinetic_db"
-}
-```
-
-### 4. Run the Flask app
+### 3. Seed Sample Events (Optional)
 ```bash
-python app.py
+py -3.12 seed_events.py
 ```
 
-The app will start at **http://localhost:5000**
+### 4. Start the Application
+```bash
+py -3.12 app.py
+```
+Open 👉 **http://localhost:5000** in your browser.
 
 ---
 
-## 🗄️ Database Schema
+## ✨ Core Features
 
-Same as the original Java project, plus the **`department`** column added to `event_registrations` (required by the RSVP form):
-
-| Table | Key Columns |
-|---|---|
-| `users` | id, full_name, email, password, role |
-| `events` | id, title, event_date, semester, purpose, outcome, location, capacity, banner_image, join_count |
-| `event_registrations` | id, event_id, student_name, semester, **department**, section, university_id, registration_date |
-| `notifications` | id, event_id, message, is_read, created_at |
-
-> **Note:** If you already created the database with the old Java schema (without `department`), run:
-> ```sql
-> ALTER TABLE event_registrations ADD COLUMN department VARCHAR(255) DEFAULT NULL AFTER semester;
-> ```
-
----
-
-## ✨ Features
-
-- 🔐 **Session-based authentication** — login, register, auto-login after signup, logout
-- 👤 **Role-based access** — Student vs Admin views
-- 📅 **Interactive calendar** — filter events by date
-- 🖼️ **Banner image uploads** — stored in `static/uploads/`
-- 🔔 **Live notifications** — bell icon polls every 3 seconds via AJAX
-- 📊 **Admin dashboard** — expandable event rows showing registered students
-- 📋 **My Events page** — view and deregister from events
-- 🎯 **Event RSVP** — register with name, semester, department, section, university ID
-
----
-
-## 🛠️ Tech Stack
-
-| Component | Java Version | Python Version |
-|---|---|---|
-| Language | Java 17 | Python 3.x |
-| Framework | Jakarta Servlet API | Flask 3.x |
-| Templates | JSP | Jinja2 HTML |
-| Database | MySQL via JDBC | MySQL via mysql-connector-python |
-| Sessions | HttpSession | Flask session (server-side) |
-| File Uploads | `@MultipartConfig` | Werkzeug / Flask `request.files` |
-| CSS | Tailwind CDN | Tailwind CDN (identical) |
+- 🐍 **100% Python Flask REST Architecture** — Session handling, secure password hashing, and MySQL integration.
+- 🟢 **GPU-Accelerated AI Engine (`ai_engine.py`)** — Automatic CUDA detection for NVIDIA GPUs (RTX series) with CPU fallback.
+- 🔍 **Semantic Search** — 384-dimensional PyTorch vector embeddings to understand search queries by context instead of plain text matching.
+- 🎤 **AI Voice Search** — Real-time speech recognition for event filtering.
+- 🗺️ **Campus Maps** — Interactive Leaflet.js map centered on Presidency University, Yelahanka, Bengaluru with venue pins.
+- 🤖 **KineticAI Chatbot** — Assistant for event discovery and seat availability checks.
+- 📊 **Admin Analytics Dashboard** — Live telemetry for GPU VRAM, CPU load, trending scores, department breakdown, and CSV report exporter.
