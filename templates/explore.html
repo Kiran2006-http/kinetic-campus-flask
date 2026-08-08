@@ -7,6 +7,8 @@
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
+    <!-- HTML5 QR Code Scanner Library -->
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
         .glass-card {
@@ -139,7 +141,12 @@
                     {% endif %}
                 </div>
             </div>
-            <div class="flex items-center gap-6">
+            <div class="flex items-center gap-4">
+                <button onclick="openQRScanner()"
+                        class="px-4 py-2 rounded-xl bg-[#fbabff]/10 border border-[#fbabff]/30 text-[#fbabff] hover:bg-[#fbabff]/20 text-xs font-black uppercase tracking-widest flex items-center gap-2 transition-all">
+                    <span class="material-symbols-outlined text-sm">qr_code_scanner</span>
+                    Scan QR
+                </button>
                 <div class="relative inline-block">
                     <button id="notificationBtn" class="material-symbols-outlined text-[#a3aac4] relative hover:text-white transition-colors focus:outline-none">
                         notifications
@@ -309,11 +316,95 @@
         </div>
     </div>
 
+    <!-- QR CODE CAMERA SCANNER MODAL -->
+    <div id="qrScanOverlay" class="hidden fixed inset-0 z-[300] flex items-center justify-center px-4"
+         style="background:rgba(0,0,0,.75); backdrop-filter:blur(8px);">
+        <div class="glass-card rounded-3xl p-8 max-w-md w-full border border-[#fbabff]/30 shadow-2xl relative">
+            <button onclick="closeQRScanner()" class="absolute top-4 right-4 text-white hover:text-[#fbabff] text-2xl font-bold">✕</button>
+
+            <div class="text-center mb-6">
+                <span class="inline-block p-3 rounded-2xl bg-[#fbabff]/10 text-[#fbabff] mb-3">
+                    <span class="material-symbols-outlined text-3xl">qr_code_scanner</span>
+                </span>
+                <h3 class="text-xl font-black text-white">Scan Event QR Code</h3>
+                <p class="text-xs text-[#a3aac4] mt-1">Point your camera at an event QR code to join instantly!</p>
+            </div>
+
+            <div id="qr-reader-container" class="w-full rounded-2xl overflow-hidden border border-white/10 bg-black min-h-[260px] flex items-center justify-center">
+                <div id="qr-reader" class="w-full"></div>
+            </div>
+
+            <div id="qrScanStatus" class="mt-4 p-3 rounded-xl bg-white/5 border border-white/5 text-center text-xs text-[#a3aac4]">
+                🎥 Align QR code inside scanner frame...
+            </div>
+        </div>
+    </div>
+
     <script>
     // ── All events injected by Flask ────────────────────────────
     const RAW_EVENTS = {{ events | tojson }};
     const DB_ERROR   = {{ db_error | tojson }};
     const IS_LOGGED_IN = {{ 'true' if is_logged_in else 'false' }};
+
+    let html5QrCodeScanner = null;
+
+    function openQRScanner() {
+        document.getElementById('qrScanOverlay').classList.remove('hidden');
+        document.getElementById('qrScanStatus').innerHTML = '🎥 Starting camera...';
+
+        if (!html5QrCodeScanner) {
+            html5QrCodeScanner = new Html5Qrcode("qr-reader");
+        }
+
+        html5QrCodeScanner.start(
+            { facingMode: "environment" },
+            { fps: 10, qrbox: { width: 220, height: 220 } },
+            onQrCodeScanned,
+            onQrScanError
+        ).catch(err => {
+            document.getElementById('qrScanStatus').innerHTML = '⚠️ Camera access denied or not available.';
+        });
+    }
+
+    function closeQRScanner() {
+        if (html5QrCodeScanner) {
+            html5QrCodeScanner.stop().then(() => {
+                document.getElementById('qrScanOverlay').classList.add('hidden');
+            }).catch(() => {
+                document.getElementById('qrScanOverlay').classList.add('hidden');
+            });
+        } else {
+            document.getElementById('qrScanOverlay').classList.add('hidden');
+        }
+    }
+
+    function onQrCodeScanned(decodedText, decodedResult) {
+        document.getElementById('qrScanStatus').innerHTML = '⚡ QR Code Scanned! Redirecting...';
+        closeQRScanner();
+
+        // Extract Event ID from scanned URL or string (e.g. event-details?id=3 or event:3 or http://...)
+        let eventId = null;
+        if (decodedText.includes('id=')) {
+            const match = decodedText.match(/id=(\d+)/);
+            if (match) eventId = match[1];
+        } else if (decodedText.startsWith('event:')) {
+            eventId = decodedText.replace('event:', '').trim();
+        } else if (!isNaN(decodedText.trim())) {
+            eventId = decodedText.trim();
+        }
+
+        if (eventId) {
+            handleJoinClick(eventId);
+        } else if (decodedText.startsWith('http')) {
+            window.location.href = decodedText;
+        } else {
+            alert('Scanned QR Content: ' + decodedText);
+        }
+    }
+
+    function onQrScanError(errorMessage) {
+        // Scanning in progress...
+    }
 
     function handleJoinClick(eventId) {
         if (IS_LOGGED_IN) {
