@@ -245,6 +245,7 @@
                             <th class="px-8 py-5">Capacity</th>
                             <th class="px-8 py-5">Registered</th>
                             <th class="px-8 py-5">Fill Rate</th>
+                            <th class="px-8 py-5 text-right">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="eventTableBody" class="divide-y divide-white/5">
@@ -290,11 +291,18 @@
                                     <span class="text-[10px] text-[#a3aac4] italic">No cap set</span>
                                 {% endif %}
                             </td>
+                            <td class="px-8 py-6 text-right" onclick="event.stopPropagation()">
+                                <a href="/delete-event/{{ ev.id }}"
+                                   onclick="return confirm('Are you sure you want to delete {{ ev.title | escape }}?')"
+                                   class="px-3 py-1.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 text-[10px] font-black uppercase tracking-widest transition-all">
+                                    🗑️ Delete
+                                </a>
+                            </td>
                         </tr>
 
                         <!-- Expandable Student Sub-Table -->
                         <tr>
-                            <td colspan="7" class="p-0 border-0">
+                            <td colspan="8" class="p-0 border-0">
                                 <div id="students-{{ ev.id }}"
                                      class="hidden bg-[#060e20]/60 border-t border-white/5">
                                     <table class="w-full text-left">
@@ -346,7 +354,7 @@
                         {% endfor %}
                     {% else %}
                         <tr>
-                            <td colspan="7" class="px-8 py-20 text-center">
+                            <td colspan="8" class="px-8 py-20 text-center">
                                 <span class="material-symbols-outlined text-5xl text-[#85adff]/30 block mb-4">event_busy</span>
                                 <p class="text-[#a3aac4] italic text-sm">No events found. Create one to get started.</p>
                             </td>

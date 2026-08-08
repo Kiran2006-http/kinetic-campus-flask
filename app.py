@@ -846,6 +846,26 @@ def api_semantic_search():
         return jsonify({"error": str(e), "results": []}), 500
 
 
+@app.route("/delete-event/<int:event_id>", methods=["POST", "GET"])
+def delete_event(event_id):
+    """Delete an event and all associated registrations (Admin only)."""
+    if session.get("role") != "admin":
+        return jsonify({"ok": False, "error": "Unauthorized"}), 403
+
+    try:
+        con = get_db()
+        cur = con.cursor()
+        # Delete registrations first
+        cur.execute("DELETE FROM event_registrations WHERE event_id = %s", (event_id,))
+        # Delete event
+        cur.execute("DELETE FROM events WHERE id = %s", (event_id,))
+        con.commit()
+        cur.close(); con.close()
+        return redirect(url_for("admin_dashboard"))
+    except Exception as e:
+        return f"Error deleting event: {e}", 500
+
+
 @app.route("/api/device-status")
 def api_device_status():
     return jsonify(get_device_status())

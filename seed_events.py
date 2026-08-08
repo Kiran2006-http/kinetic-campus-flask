@@ -12,8 +12,8 @@ events = [
      'A vibrant evening of music, dance, and art celebrating the diverse cultures of our campus.',
      'Students will experience intercultural exchange and discover hidden talents.',
      'Open Air Theatre', 500, None),
-    ('Hackathon 48H', '2026-08-20', '3-4',
-     'A 48-hour coding marathon where teams build solutions for real-world problems.',
+    ('Hackathon 72H', '2026-08-20', '3-4',
+     'A 72-hour coding marathon where teams build solutions for real-world problems.',
      'Participants will win prizes and get internship opportunities from sponsor companies.',
      'CS Lab Block B', 100, None),
     ('Leadership Summit', '2026-08-25', '7-8',
@@ -28,6 +28,10 @@ events = [
      'The annual inter-department sports tournament featuring cricket, football, basketball, and athletics.',
      'Foster team spirit and celebrate athletic excellence across all departments.',
      'Sports Ground', 1000, None),
+    ('World Innovation Day 2026', '2026-08-12', 'all',
+     'Global celebration of human creativity, innovation, and technological breakthroughs across campus disciplines.',
+     'Exhibiting student innovations, tech prototypes, and creative projects.',
+     'Main Auditorium', 250, None),
 ]
 
 cur.executemany(

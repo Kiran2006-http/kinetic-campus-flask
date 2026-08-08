@@ -116,11 +116,11 @@
                 </div>
             </div>
 
-            <div class="relative group">
+            <a href="/explore" class="relative group cursor-pointer block">
                 <div class="absolute inset-0 bg-[#85adff]/20 blur-[100px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <div class="aspect-square glass-card rounded-[40px] p-8 relative overflow-hidden flex flex-col justify-end">
+                <div class="aspect-square glass-card rounded-[40px] p-8 relative overflow-hidden flex flex-col justify-end hover:border-[#85adff]/40 transition-all">
                     <div class="absolute top-8 right-8 w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
-                        <span class="material-symbols-outlined text-white">share</span>
+                        <span class="material-symbols-outlined text-white">arrow_forward</span>
                     </div>
                     <img src="https://d1csarkz8obe9u.cloudfront.net/posterpreviews/world-creativity-and-innovation-day-design-template-96a17fa5a544dd4771ab792c1c968c90_screen.jpg?ts=1732802429"
                          alt="Pulse"
@@ -128,12 +128,12 @@
                     <div class="bg-[#091328]/80 backdrop-blur-md p-6 rounded-2xl border border-white/10 relative z-10">
                         <p class="text-[10px] font-black uppercase tracking-widest text-[#a3aac4] mb-2">Happening Now</p>
                         <div class="flex justify-between items-center">
-                            <h3 class="text-xl font-bold">World Innovation Day 2026</h3>
+                            <h3 class="text-xl font-bold group-hover:text-[#85adff] transition-colors">World Innovation Day 2026</h3>
                             <span class="px-3 py-1 bg-red-500/20 text-red-500 text-[10px] font-bold rounded-full animate-pulse">LIVE</span>
                         </div>
                     </div>
                 </div>
-            </div>
+            </a>
         </div>
     </section>
 
@@ -242,47 +242,68 @@
                 <p class="text-[#a3aac4] font-medium tracking-wide">Powerful tools designed for the modern academic lifestyle.</p>
             </div>
             <div class="grid md:grid-cols-12 gap-6">
-                <div class="md:col-span-8 glass-card p-10 rounded-3xl min-h-[320px] flex flex-col justify-between group cursor-pointer hover:border-[#85adff]/50 transition-all">
-                    <span class="material-symbols-outlined text-3xl text-[#85adff]">bolt</span>
+
+                <!-- 1. Personalized Feed -->
+                <a href="/explore" class="md:col-span-8 glass-card p-10 rounded-3xl min-h-[320px] flex flex-col justify-between group cursor-pointer hover:border-[#85adff]/50 hover:shadow-[0_0_30px_rgba(133,173,255,0.15)] transition-all">
+                    <div class="flex items-center justify-between">
+                        <span class="material-symbols-outlined text-3xl text-[#85adff]">bolt</span>
+                        <span class="text-xs font-bold text-[#85adff] flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                            Explore AI Feed ➔
+                        </span>
+                    </div>
                     <div>
-                        <h3 class="text-2xl font-extrabold mb-3">Personalized Feed</h3>
+                        <h3 class="text-2xl font-extrabold mb-3 text-white group-hover:text-[#85adff] transition-colors">Personalized Feed</h3>
                         <p class="text-[#a3aac4] mb-6 max-w-md">An AI-driven environment tailored to your interests, majors, and local campus hotspots.</p>
-                        <div class="flex gap-2">
-                            <span class="px-3 py-1 bg-white/5 rounded-full text-[10px] font-bold uppercase">Engineering</span>
-                            <span class="px-3 py-1 bg-white/5 rounded-full text-[10px] font-bold uppercase">Nightlife</span>
-                            <span class="px-3 py-1 bg-white/5 rounded-full text-[10px] font-bold uppercase">Workshops</span>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-1 bg-white/5 rounded-full text-[10px] font-bold uppercase text-[#85adff] border border-white/5">Engineering</span>
+                            <span class="px-3 py-1 bg-white/5 rounded-full text-[10px] font-bold uppercase text-[#fbabff] border border-white/5">Nightlife</span>
+                            <span class="px-3 py-1 bg-white/5 rounded-full text-[10px] font-bold uppercase text-[#4ade80] border border-white/5">Workshops</span>
                         </div>
                     </div>
-                </div>
-                <div class="md:col-span-4 glass-card p-10 rounded-3xl flex flex-col justify-between bg-gradient-to-br from-[#192540] to-[#091328]">
+                </a>
+
+                <!-- 2. Instant RSVP -->
+                <a href="/my-events" class="md:col-span-4 glass-card p-10 rounded-3xl flex flex-col justify-between bg-gradient-to-br from-[#192540] to-[#091328] group cursor-pointer hover:border-[#fbabff]/50 hover:shadow-[0_0_30px_rgba(251,171,255,0.15)] transition-all">
                     <span class="material-symbols-outlined text-3xl text-[#fbabff]">qr_code_2</span>
                     <div>
-                        <h3 class="text-2xl font-extrabold mb-3">Instant RSVP</h3>
+                        <h3 class="text-2xl font-extrabold mb-3 text-white group-hover:text-[#fbabff] transition-colors">Instant RSVP</h3>
                         <p class="text-[#a3aac4] text-sm leading-relaxed mb-6">Scan and sync with single tap. Digital tickets maintain your spot.</p>
-                        <a href="#" class="text-sm font-bold text-[#85adff] flex items-center gap-2 group">
-                            See how it works
-                            <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
-                        </a>
+                        <span class="text-sm font-bold text-[#85adff] flex items-center gap-2 group-hover:translate-x-1 transition-transform">
+                            View My RSVPs ➔
+                        </span>
                     </div>
-                </div>
-                <div class="md:col-span-4 glass-card p-10 rounded-3xl min-h-[300px] flex flex-col justify-between">
+                </a>
+
+                <!-- 3. Club Management -->
+                <a href="/admin" class="md:col-span-4 glass-card p-10 rounded-3xl min-h-[300px] flex flex-col justify-between group cursor-pointer hover:border-cyan-400/50 hover:shadow-[0_0_30px_rgba(34,211,238,0.15)] transition-all">
                     <span class="material-symbols-outlined text-3xl text-cyan-400">groups</span>
                     <div>
-                        <h3 class="text-2xl font-extrabold mb-3">Club Management</h3>
-                        <p class="text-[#a3aac4] text-sm">Lead your community with centralized dashboards and analytics.</p>
+                        <h3 class="text-2xl font-extrabold mb-3 text-white group-hover:text-cyan-400 transition-colors">Club Management</h3>
+                        <p class="text-[#a3aac4] text-sm mb-4">Lead your community with centralized dashboards and analytics.</p>
+                        <span class="text-xs font-bold text-cyan-400 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                            Open Admin Panel ➔
+                        </span>
                     </div>
-                </div>
-                <div class="md:col-span-8 glass-card p-10 rounded-3xl flex flex-col md:flex-row justify-between items-end md:items-center">
+                </a>
+
+                <!-- 4. University Integration -->
+                <a href="/explore" class="md:col-span-8 glass-card p-10 rounded-3xl flex flex-col md:flex-row justify-between items-end md:items-center group cursor-pointer hover:border-[#85adff]/50 hover:shadow-[0_0_30px_rgba(133,173,255,0.15)] transition-all">
                     <div class="max-w-md">
-                        <h3 class="text-2xl font-extrabold mb-3">University Integration</h3>
+                        <h3 class="text-2xl font-extrabold mb-3 text-white group-hover:text-[#85adff] transition-colors">University Integration</h3>
                         <p class="text-[#a3aac4] text-sm">Synchronized with Canvas, Outlook, and Google Calendar. Never miss a deadline.</p>
                     </div>
                     <div class="flex gap-4 mt-6 md:mt-0">
-                        <div class="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center"><span class="material-symbols-outlined opacity-50">sync</span></div>
-                        <div class="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center"><span class="material-symbols-outlined opacity-50">calendar_month</span></div>
-                        <div class="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center"><span class="material-symbols-outlined opacity-50">mail</span></div>
+                        <div class="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-[#85adff] group-hover:scale-110 transition-transform">
+                            <span class="material-symbols-outlined">sync</span>
+                        </div>
+                        <div class="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-[#fbabff] group-hover:scale-110 transition-transform">
+                            <span class="material-symbols-outlined">calendar_month</span>
+                        </div>
+                        <div class="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-[#4ade80] group-hover:scale-110 transition-transform">
+                            <span class="material-symbols-outlined">mail</span>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
         </div>
     </section>
