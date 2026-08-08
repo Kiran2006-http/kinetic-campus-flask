@@ -163,6 +163,31 @@
                         </div>
                         <p class="text-[10px] text-[#a3aac4]">Scan with laptop camera or phone to join instantly!</p>
                     </section>
+
+                    <!-- EVENT FEEDBACK CARD -->
+                    <section class="glass-panel rounded-3xl p-6 mt-6 border-t-4 border-yellow-400">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="material-symbols-outlined text-yellow-400">rate_review</span>
+                            <h4 class="text-sm font-black text-white">Event Feedback</h4>
+                        </div>
+                        <form onsubmit="submitDetailsFeedback(event)">
+                            <div class="flex gap-2 text-2xl text-yellow-400 mb-3 justify-center">
+                                <span onclick="setDetRating(1)" class="det-star cursor-pointer opacity-40 hover:opacity-100">★</span>
+                                <span onclick="setDetRating(2)" class="det-star cursor-pointer opacity-40 hover:opacity-100">★</span>
+                                <span onclick="setDetRating(3)" class="det-star cursor-pointer opacity-40 hover:opacity-100">★</span>
+                                <span onclick="setDetRating(4)" class="det-star cursor-pointer opacity-40 hover:opacity-100">★</span>
+                                <span onclick="setDetRating(5)" class="det-star cursor-pointer opacity-100">★</span>
+                            </div>
+                            <input type="hidden" id="detRating" value="5"/>
+                            <textarea id="detComments" rows="2" required placeholder="Share your experience..."
+                                      class="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2 text-xs text-white focus:outline-none mb-3"></textarea>
+                            <button type="submit"
+                                    class="w-full py-2.5 rounded-xl bg-yellow-400 text-[#060e20] font-black text-xs uppercase tracking-widest hover:scale-[1.02] transition-all">
+                                Submit Review
+                            </button>
+                        </form>
+                        <div id="detStatus" class="hidden mt-2 text-center text-xs font-bold text-green-400"></div>
+                    </section>
                 </div>
             </div>
         {% else %}
@@ -218,6 +243,43 @@
                 .bindPopup(popupContent)
                 .openPopup();
         });
+
+        let currentDetRating = 5;
+
+        function setDetRating(r) {
+            currentDetRating = r;
+            document.getElementById('detRating').value = r;
+            const stars = document.querySelectorAll('.det-star');
+            stars.forEach((s, idx) => {
+                if (idx < r) s.classList.remove('opacity-40');
+                else s.classList.add('opacity-40');
+            });
+        }
+
+        function submitDetailsFeedback(e) {
+            e.preventDefault();
+            const eventId = "{{ event_id }}";
+            const rating  = document.getElementById('detRating').value;
+            const comments = document.getElementById('detComments').value;
+
+            fetch('/api/submit-feedback', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ event_id: eventId, rating: rating, comments: comments })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.ok) {
+                    const status = document.getElementById('detStatus');
+                    status.innerText = '✅ Thank you! Your review is posted to Admin Dashboard.';
+                    status.classList.remove('hidden');
+                    document.getElementById('detComments').value = '';
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            })
+            .catch(err => alert('Submission error: ' + err));
+        }
     </script>
     {% endif %}
 </body>
