@@ -363,6 +363,49 @@
                     </tbody>
                 </table>
             </div>
+
+            <!-- STUDENT FEEDBACK RESULTS SECTION -->
+            <div class="mt-16">
+                <div class="flex items-center justify-between mb-8">
+                    <div>
+                        <h2 class="text-2xl font-extrabold tracking-tight flex items-center gap-3">
+                            <span class="p-2 rounded-xl bg-yellow-400/10 text-yellow-400">⭐</span>
+                            Student Feedback &amp; Event Reviews
+                        </h2>
+                        <p class="text-xs text-[#a3aac4] mt-1">Real-time student ratings and reviews submitted after event completion.</p>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-6 mb-8">
+                    {% if all_feedback %}
+                        {% for fb in all_feedback %}
+                        <div class="glass-card rounded-3xl p-6 border border-white/5 relative hover:border-yellow-400/30 transition-all">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="px-3 py-1 rounded-full bg-white/5 text-[10px] font-bold text-[#85adff] uppercase tracking-widest">
+                                    {{ fb.event_title }}
+                                </span>
+                                <div class="text-yellow-400 text-sm font-black">
+                                    {% for i in range(fb.rating) %}★{% endfor %}
+                                    <span class="text-xs text-white/50 ml-1">({{ fb.rating }}/5)</span>
+                                </div>
+                            </div>
+                            <p class="text-sm text-white font-medium mb-4 italic">
+                                "{{ fb.comments }}"
+                            </p>
+                            <div class="flex items-center justify-between text-[10px] text-[#a3aac4] pt-4 border-t border-white/5">
+                                <span class="font-bold text-[#dee5ff]">👤 {{ fb.student_name }}</span>
+                                <span>{{ fb.created_at }}</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="md:col-span-3 glass-card rounded-3xl p-12 text-center text-[#a3aac4]">
+                            <span class="material-symbols-outlined text-4xl block mb-2 text-yellow-400/40">rate_review</span>
+                            <p class="text-sm italic">No student feedback submitted yet.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
         </div>
     </main>
 

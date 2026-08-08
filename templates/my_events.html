@@ -140,9 +140,14 @@
                             </p>
                         </td>
 
-                        <!-- Deregister Button -->
+                        <!-- Actions & Feedback -->
                         <td class="px-8 py-8 text-right">
                             <div class="flex justify-end items-center gap-3">
+                                <button onclick="openFeedbackModal({{ reg.event_id }}, '{{ reg.title | escape }}')"
+                                        class="px-4 py-2 rounded-xl bg-yellow-400/10 border border-yellow-400/30 text-yellow-400 hover:bg-yellow-400/20 text-xs font-black uppercase tracking-widest flex items-center gap-1.5 transition-all">
+                                    <span class="material-symbols-outlined text-sm">star</span>
+                                    Feedback
+                                </button>
                                 <a href="/event-details?id={{ reg.event_id }}"
                                    class="p-3 rounded-xl bg-white/5 border border-white/10 text-[#85adff] hover:bg-white/10 transition-all"
                                    title="View Event">
@@ -177,6 +182,107 @@
             </table>
         </div>
     </main>
+
+    <!-- STUDENT FEEDBACK MODAL -->
+    <div id="feedbackModal" class="hidden fixed inset-0 z-[200] flex items-center justify-center px-4"
+         style="background:rgba(0,0,0,.75); backdrop-filter:blur(8px);">
+        <div class="glass-card rounded-3xl p-8 max-w-md w-full border border-yellow-400/30 shadow-2xl relative">
+            <button onclick="closeFeedbackModal()" class="absolute top-4 right-4 text-white hover:text-yellow-400 text-2xl font-bold">✕</button>
+            <div class="text-center mb-6">
+                <span class="inline-block p-3 rounded-2xl bg-yellow-400/10 text-yellow-400 mb-3">
+                    <span class="material-symbols-outlined text-3xl">rate_review</span>
+                </span>
+                <h3 class="text-xl font-black text-white" id="feedbackEventTitle">Event Feedback</h3>
+                <p class="text-xs text-[#a3aac4] mt-1">Rate your experience and share your thoughts with organizers.</p>
+            </div>
+
+            <form id="feedbackForm" onsubmit="submitStudentFeedback(event)">
+                <input type="hidden" id="feedbackEventId" name="event_id"/>
+                
+                <!-- Star Rating selector -->
+                <div class="mb-6 text-center">
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-[#a3aac4] mb-3">Overall Rating</label>
+                    <div class="flex justify-center gap-3 text-3xl text-yellow-400" id="starContainer">
+                        <span onclick="setRating(1)" class="star-icon cursor-pointer opacity-40 hover:opacity-100 transition-all" data-star="1">★</span>
+                        <span onclick="setRating(2)" class="star-icon cursor-pointer opacity-40 hover:opacity-100 transition-all" data-star="2">★</span>
+                        <span onclick="setRating(3)" class="star-icon cursor-pointer opacity-40 hover:opacity-100 transition-all" data-star="3">★</span>
+                        <span onclick="setRating(4)" class="star-icon cursor-pointer opacity-40 hover:opacity-100 transition-all" data-star="4">★</span>
+                        <span onclick="setRating(5)" class="star-icon cursor-pointer opacity-40 hover:opacity-100 transition-all" data-star="5">★</span>
+                    </div>
+                    <input type="hidden" id="selectedRating" name="rating" value="5"/>
+                </div>
+
+                <!-- Comments -->
+                <div class="mb-6">
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-[#a3aac4] mb-2">Student Comments & Review</label>
+                    <textarea id="feedbackComments" name="comments" rows="3" required placeholder="What did you enjoy most about this event?"
+                              class="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-sm text-white focus:outline-none focus:border-yellow-400 transition-all"></textarea>
+                </div>
+
+                <button type="submit"
+                        class="w-full py-4 rounded-xl bg-yellow-400 text-[#060e20] font-black text-xs uppercase tracking-widest hover:scale-[1.02] transition-all">
+                    Submit Feedback
+                </button>
+            </form>
+            <div id="feedbackStatus" class="hidden mt-4 text-center text-xs font-bold text-green-400"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentRating = 5;
+
+        function setRating(r) {
+            currentRating = r;
+            document.getElementById('selectedRating').value = r;
+            const stars = document.querySelectorAll('.star-icon');
+            stars.forEach((s, idx) => {
+                if (idx < r) {
+                    s.classList.remove('opacity-40');
+                } else {
+                    s.classList.add('opacity-40');
+                }
+            });
+        }
+
+        function openFeedbackModal(eventId, title) {
+            document.getElementById('feedbackEventId').value = eventId;
+            document.getElementById('feedbackEventTitle').innerText = 'Feedback: ' + title;
+            document.getElementById('feedbackModal').classList.remove('hidden');
+            setRating(5);
+        }
+
+        function closeFeedbackModal() {
+            document.getElementById('feedbackModal').classList.add('hidden');
+        }
+
+        function submitStudentFeedback(e) {
+            e.preventDefault();
+            const eventId = document.getElementById('feedbackEventId').value;
+            const rating  = document.getElementById('selectedRating').value;
+            const comments = document.getElementById('feedbackComments').value;
+
+            fetch('/api/submit-feedback', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ event_id: eventId, rating: rating, comments: comments })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.ok) {
+                    const status = document.getElementById('feedbackStatus');
+                    status.innerText = '✅ ' + data.message;
+                    status.classList.remove('hidden');
+                    setTimeout(() => {
+                        closeFeedbackModal();
+                        status.classList.add('hidden');
+                        document.getElementById('feedbackComments').value = '';
+                    }, 1500);
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            })
+            .catch(err => alert('Feedback submission error: ' + err));
+        }
 
     <script>
         document.getElementById('notificationBtn').addEventListener('click', function(e) {

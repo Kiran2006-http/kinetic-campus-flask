@@ -557,20 +557,44 @@ def admin_dashboard():
                 """,
                 (ev["id"],)
             )
-            students = cur.fetchall()
+            # Fetch student feedback for this event
+            cur.execute(
+                """
+                SELECT student_name, rating, comments, created_at
+                FROM   feedback
+                WHERE  event_id = %s
+                ORDER  BY created_at DESC
+                """,
+                (ev["id"],)
+            )
+            event_feedback = cur.fetchall()
+            avg_rating = round(sum(f["rating"] for f in event_feedback) / len(event_feedback), 1) if event_feedback else 0.0
 
             event_rows.append({
                 **ev,
-                "fill_pct":    fill_pct,
-                "bar_color":   bar_color,
-                "badge_color": badge_color,
-                "students":    students,
+                "fill_pct":       fill_pct,
+                "bar_color":      bar_color,
+                "badge_color":    badge_color,
+                "students":       students,
+                "feedback":       event_feedback,
+                "avg_rating":     avg_rating,
+                "feedback_count": len(event_feedback)
             })
+
+        # Fetch all feedback across all events for the Admin Portal
+        cur.execute("""
+            SELECT f.id, f.student_name, f.rating, f.comments, f.created_at, e.title AS event_title
+            FROM   feedback f
+            JOIN   events e ON f.event_id = e.id
+            ORDER  BY f.created_at DESC
+        """)
+        all_feedback = cur.fetchall()
 
         cur.close()
         con.close()
     except Exception as e:
         error_msg = str(e)
+        all_feedback = []
         print(f"[admin] Error: {e}")
 
     return render_template(
@@ -580,6 +604,7 @@ def admin_dashboard():
         total_registrations=total_registrations,
         total_students=total_students,
         event_rows=event_rows,
+        all_feedback=all_feedback,
         error_msg=error_msg,
     )
 
@@ -864,6 +889,31 @@ def delete_event(event_id):
         return redirect(url_for("admin_dashboard"))
     except Exception as e:
         return f"Error deleting event: {e}", 500
+
+
+@app.route("/api/submit-feedback", methods=["POST"])
+def api_submit_feedback():
+    """Submit student event rating & review."""
+    user_name = session.get("userName", "Anonymous Student")
+    event_id = request.form.get("event_id") or (request.json.get("event_id") if request.is_json else None)
+    rating   = request.form.get("rating")   or (request.json.get("rating") if request.is_json else None)
+    comments = request.form.get("comments") or (request.json.get("comments") if request.is_json else "")
+
+    if not event_id or not rating:
+        return jsonify({"ok": False, "error": "Missing event_id or rating"}), 400
+
+    try:
+        con = get_db()
+        cur = con.cursor()
+        cur.execute("""
+            INSERT INTO feedback (event_id, student_name, rating, comments)
+            VALUES (%s, %s, %s, %s)
+        """, (event_id, user_name, rating, comments))
+        con.commit()
+        cur.close(); con.close()
+        return jsonify({"ok": True, "message": "Thank you for your feedback!"})
+    except Exception as e:
+        return jsonify({"ok": False, "error": str(e)}), 500
 
 
 @app.route("/api/device-status")
